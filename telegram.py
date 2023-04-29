@@ -4,8 +4,8 @@ import telepot
 # by using bot's token to access HTTP API through telepot framework.
 # It is configurable to change recipient by setting up recipient's chatId
 
-chat_id = ''
-bots_token = ''
+chat_id = '424668716'
+bots_token = '6175511910:AAFRAyMtLAcg0okYIv3jBxbWkq1ibkIwCKQ'
 
 
 # Bot sends notifications to the recipient
