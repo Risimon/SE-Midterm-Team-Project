@@ -1,30 +1,20 @@
-import telepot
+import time
+import logging
 
-# This script is used to send a message to Telegram Bot
-# by using bot's token to access HTTP API through telepot framework.
-# It is configurable to change recipient by setting up recipient's chatId
+from aiogram import Bot, Dispatcher, executor, types
 
-chat_id = '424668716'
-bots_token = '6175511910:AAFRAyMtLAcg0okYIv3jBxbWkq1ibkIwCKQ'
+TOKEN = "6175511910:AAFRAyMtLAcg0okYIv3jBxbWkq1ibkIwCKQ"
 
+bot = Bot(token=TOKEN)
+dp = Dispatcher(bot=bot)
 
-# Bot sends notifications to the recipient
-def send_telegram_message(message: str):
-    telegram_bot.sendMessage(chat_id, message)
+@dp.message_handler(commands=['start'])
+async def start_handler(message: types.Message):
+    user_id = message.from_user.id
+    user_full_name = message.from_user.full_name
+    logging.info(f'{user_id=} {user_full_name=} {time.asctime()}')
+    await message.reply(f"Hello {user_full_name}!")
 
-
-# Bot sends notification to the recipient only once
-def send_telegram_message_once(message: str):
-    global notification_sent
-    if notification_sent is False:
-        notification_sent = True
-        send_telegram_message(message)
-
-
-# Flag for send_telegram_message_once function to indicate that function
-# was not executed
-notification_sent = False
-
-# Initialization of the bot through telepot's framework function Bot
-# that takes bot's token as an argument
-telegram_bot = telepot.Bot(bots_token)
+@dp.message_handler()
+async def copy(message: types.Message):
+    await message.reply(message.text)
