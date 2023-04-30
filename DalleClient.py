@@ -5,8 +5,8 @@ import const
 from BaseClient import BaseClient
 
 class DalleClient(BaseClient):
-    def __init__(self):
-        openai.api_key = const.OPENAI_API_KEY
+    def __init__(self, api_key):
+        openai.api_key = api_key
 
     def respond(self, messages):
         response = openai.Image.create(

@@ -8,11 +8,15 @@ import const
 from ChatClient import ChatClient
 from DalleClient import DalleClient
 from aiogram import Bot, Dispatcher, executor, types
+from io import BytesIO
+import requests
+
 
 load_dotenv()
 bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
 dp = Dispatcher(bot=bot)
-chatClient = ChatClient()
+chatClient = ChatClient(os.getenv(const.OPENAI_API_KEY))
+dalleClient = DalleClient(os.getenv(const.OPENAI_API_KEY))
 
 sessions = {}
 mode = Mode.NONE
@@ -53,8 +57,12 @@ async def prompt(message: types.Message):
         if response:
             await message.reply(response)
     else:
-        pass
-
+        url = dalleClient.respond(message.text)
+        if url:
+            photo_response = requests.get(url)
+            photo_data = BytesIO(photo_response.content)
+            photo = types.InputFile(photo_data)
+            await bot.send_photo(chat_id=message.chat.id, photo=photo)
 
 def ask_chat_api(message: types.Message):
     if not sessions[message.chat.id]:
