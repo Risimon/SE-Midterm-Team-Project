@@ -10,10 +10,10 @@ from DalleClient import DalleClient
 from WhisperClient import WhisperClient
 from typing import Union
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
 from io import BytesIO
 import requests
 import base64
-
 
 load_dotenv()
 bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
@@ -24,7 +24,10 @@ dalleClient = DalleClient(os.getenv(const.OPENAI_API_KEY))
 sessions = {}
 mode = Mode.NONE
 
-
+chat = KeyboardButton('Student Helper')
+dalle = KeyboardButton('Artist')
+clear = KeyboardButton('Clear')
+keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(chat).add(dalle).add(clear)
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
     user_id = message.from_user.id
@@ -34,10 +37,9 @@ async def start_handler(message: types.Message):
                         f"I am Student Helper Bot\n\n"
                         f"I could be:\n"
                         f"1. Student Assistant\n"
-                        f"2. Artist")
+                        f"2. Artist", reply_markup=keyboard1)
 
-
-@dp.message_handler(commands=['1'])
+@dp.message_handler(commands=['helper'])
 async def set_helper_mode(message: types.Message):
     global mode
     sessions[message.chat.id] = []
@@ -45,7 +47,7 @@ async def set_helper_mode(message: types.Message):
     await message.reply("now i'm a student helper\nplease enter the list of courses you've taken:\n")
 
 
-@dp.message_handler(commands=['2'])
+@dp.message_handler(commands=['artist'])
 async def set_dalle_mode(message: types.Message):
     global mode
     mode = Mode.DALLE
@@ -63,18 +65,25 @@ async def clear_data(message: types.Message):
 @dp.message_handler()
 async def prompt(message: types.Message):
     global mode
-    if mode == Mode.STUDENT_HELPER:
-        response = ask_chat_api(message)
-        if response:
-            await message.reply(response)
-    elif mode == Mode.DALLE:
-        ask_dalle_api(message)
-        photo = dalleClient.respond(message.text)
-        await bot.send_photo(chat_id=message.chat.id, photo=photo)
-    elif mode == Mode.NONE:
-        await message.reply("First choose the mode")
+    if message.text == "Student Helper":
+        await set_helper_mode(message)
+    elif message.text == "Artist":
+        await set_dalle_mode(message)
+    elif message.text == "Clear":
+        await clear_data(message)
+    else:
+        if mode == Mode.STUDENT_HELPER:
+            response = ask_chat_api(message)
+            if response:
+                await message.reply(response)
+        elif mode == Mode.DALLE:
+            ask_dalle_api(message)
+            photo = dalleClient.respond(message.text)
+            await bot.send_photo(chat_id=message.chat.id, photo=photo)
+        elif mode == Mode.NONE:
+            await message.reply("First choose the mode")
 
-            
+
 def ask_chat_api(message: types.Message):
     if not sessions[message.chat.id]:
         sessions[message.chat.id].append({"role": "user", "content": message.text})
