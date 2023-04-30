@@ -1,6 +1,7 @@
 import time
 import logging
 from dotenv import load_dotenv
+from Mode import Mode
 import os
 
 import const
@@ -13,6 +14,7 @@ dp = Dispatcher(bot=bot)
 chatClient = ChatClient(api_key=os.getenv(const.OPENAI_API_KEY))
 
 sessions = {}
+mode = Mode.NONE
 
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
@@ -26,16 +28,30 @@ async def start_handler(message: types.Message):
                         f"2. Artist")
 
 @dp.message_handler(commands=['1'])
-async def set_mode(message: types.Message):
+async def set_helper_mode(message: types.Message):
+    global mode
     sessions[message.chat.id] = []
+    mode = Mode.STUDENT_HELPER
     await message.reply("now i'm a student helper\nplease enter the list of courses you've taken:\n")
+
+
+@dp.message_handler(commands=['2'])
+async def set_dalle_mode(message: types.Message):
+    global mode
+    mode = Mode.DALLE
+    await message.reply("now i'm an artist")
+
 
 @dp.message_handler()
 async def prompt(message: types.Message):
-    if not sessions[message.chat.id]:
-        sessions[message.chat.id].append({"role": "user", "content": message.text})
+    global mode
+    if mode == Mode.STUDENT_HELPER:
+        if not sessions[message.chat.id]:
+            sessions[message.chat.id].append({"role": "user", "content": message.text})
+        else:
+            sessions[message.chat.id].append({"role": "user", "content": message.text})
+            response = chatClient.respond(sessions[message.chat.id])
+            sessions[message.chat.id].append(response[-1])
+            await message.reply(response[-1]["content"])
     else:
-        sessions[message.chat.id].append({"role": "user", "content": message.text})
-        response = chatClient.respond(sessions[message.chat.id])
-        sessions[message.chat.id].append(response[-1])
-        await message.reply(response[-1]["content"])
+        pass
