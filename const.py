@@ -1,4 +1,5 @@
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "OPENAI_API_KEY"
+TELEGRAM_API_KEY = "TELEGRAM_API_KEY"
 
 CHAT_PROMPT = "As an advanced chatbot Student Assistant, your primary goal is to assist students to the best of your ability. " \
               "You have deep knowledge in %s. This may involve answering questions, providing helpful " \
