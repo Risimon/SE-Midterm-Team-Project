@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dotenv import load_dotenv
 import const
 import openai
 import os
@@ -11,4 +10,3 @@ class BaseClient(ABC):
     @abstractmethod
     def respond(self, messages):
         pass
-

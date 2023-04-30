@@ -9,8 +9,10 @@ from ChatClient import ChatClient
 from DalleClient import DalleClient
 from WhisperClient import WhisperClient
 from typing import Union
+from WhisperClient import WhisperClient
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
+from typing import Union
 from io import BytesIO
 import requests
 import base64
@@ -23,7 +25,6 @@ dalleClient = DalleClient(os.getenv(const.OPENAI_API_KEY))
 
 sessions = {}
 mode = Mode.NONE
-
 chat = KeyboardButton('Student Helper')
 dalle = KeyboardButton('Artist')
 clear = KeyboardButton('Clear')
@@ -101,4 +102,6 @@ def ask_dalle_api(message: types.Message):
         photo_data = BytesIO(photo_response.content)
         photo = types.InputFile(photo_data)
         return photo
+
+
 
