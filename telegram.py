@@ -61,16 +61,6 @@ async def clear_data(message: types.Message):
 @dp.message_handler()
 async def prompt(message: types.Message):
     global mode
-    if mode == Mode.STUDENT_HELPER:
-        response = ask_chat_api(message)
-        if response:
-            await message.reply(response)
-    elif mode == Mode.DALLE:
-        ask_dalle_api(message)
-        photo = dalleClient.respond(message.text)
-        await bot.send_photo(chat_id=message.chat.id, photo=photo)
-    elif mode == Mode.NONE:
-        await message.reply("First choose the mode")
     if message.text == "Student Helper":
         await set_helper_mode(message)
     elif message.text == "Artist":
@@ -80,15 +70,14 @@ async def prompt(message: types.Message):
             response = ask_chat_api(message)
             if response:
                 await message.reply(response)
-        else:
-            url = dalleClient.respond(message.text)
-            if url:
-                photo_response = requests.get(url)
-                photo_data = BytesIO(photo_response.content)
-                photo = types.InputFile(photo_data)
-                await bot.send_photo(chat_id=message.chat.id, photo=photo)
+        elif mode == Mode.DALLE:
+            ask_dalle_api(message)
+            photo = dalleClient.respond(message.text)
+            await bot.send_photo(chat_id=message.chat.id, photo=photo)
+        elif mode == Mode.NONE:
+            await message.reply("First choose the mode")
 
-            
+
 def ask_chat_api(message: types.Message):
     if not sessions[message.chat.id]:
         sessions[message.chat.id].append({"role": "user", "content": message.text})
