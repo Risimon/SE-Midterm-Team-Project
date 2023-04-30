@@ -16,6 +16,7 @@ chatClient = ChatClient(api_key=os.getenv(const.OPENAI_API_KEY))
 sessions = {}
 mode = Mode.NONE
 
+
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
     user_id = message.from_user.id
@@ -26,6 +27,7 @@ async def start_handler(message: types.Message):
                         f"I could be:\n"
                         f"1. Student Assistant\n"
                         f"2. Artist")
+
 
 @dp.message_handler(commands=['1'])
 async def set_helper_mode(message: types.Message):
@@ -46,12 +48,18 @@ async def set_dalle_mode(message: types.Message):
 async def prompt(message: types.Message):
     global mode
     if mode == Mode.STUDENT_HELPER:
-        if not sessions[message.chat.id]:
-            sessions[message.chat.id].append({"role": "user", "content": message.text})
-        else:
-            sessions[message.chat.id].append({"role": "user", "content": message.text})
-            response = chatClient.respond(sessions[message.chat.id])
-            sessions[message.chat.id].append(response[-1])
-            await message.reply(response[-1]["content"])
+        response = ask_chat_api(message)
+        if response:
+            await message.reply(response)
     else:
         pass
+
+
+def ask_chat_api(message: types.Message):
+    if not sessions[message.chat.id]:
+        sessions[message.chat.id].append({"role": "user", "content": message.text})
+    else:
+        sessions[message.chat.id].append({"role": "user", "content": message.text})
+        response = chatClient.respond(sessions[message.chat.id])
+        sessions[message.chat.id].append(response[-1])
+        return response[-1]["content"]
