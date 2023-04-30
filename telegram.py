@@ -21,30 +21,30 @@ dalleClient = DalleClient(os.getenv(const.OPENAI_API_KEY))
 sessions = {}
 mode = Mode.NONE
 
-chat = KeyboardButton(BUTTON_HELPER)
-dalle = KeyboardButton(BUTTON_ARTIST)
-clear = KeyboardButton(BUTTON_CLEAR)
+chat = KeyboardButton(const.BUTTON_HELPER)
+dalle = KeyboardButton(const.BUTTON_ARTIST)
+clear = KeyboardButton(const.BUTTON_CLEAR)
 keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(chat).add(dalle).add(clear)
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
     user_id = message.from_user.id
     user_full_name = message.from_user.full_name
     logging.info(f'{user_id=} {user_full_name=} {time.asctime()}')
-    await message.reply(GREETING_MESSAGE, reply_markup=keyboard1)
+    await message.reply(const.START_MESSAGE, reply_markup=keyboard1)
 
 @dp.message_handler(commands=['helper'])
 async def set_helper_mode(message: types.Message):
     global mode
     sessions[message.chat.id] = []
     mode = Mode.STUDENT_HELPER
-    await message.reply(HELPER_MESSAGE)
+    await message.reply(const.HELPER_MESSAGE)
 
 
 @dp.message_handler(commands=['artist'])
 async def set_dalle_mode(message: types.Message):
     global mode
     mode = Mode.DALLE
-    await message.reply(ARTIST_MESSAGE)
+    await message.reply(const.ARTIST_MESSAGE)
 
 
 @dp.message_handler(commands=['clear'])
@@ -52,7 +52,7 @@ async def clear_data(message: types.Message):
     global mode
     mode = Mode.NONE
     sessions[message.chat.id].clear()
-    await message.reply(CLEAR_MESSAGE)
+    await message.reply(const.CLEAR_MESSAGE)
     
 
 @dp.message_handler()
