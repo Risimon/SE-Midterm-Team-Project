@@ -18,25 +18,21 @@ dp = Dispatcher(bot=bot)
 chatClient = ChatClient(os.getenv(const.OPENAI_API_KEY))
 dalleClient = DalleClient(os.getenv(const.OPENAI_API_KEY))
 
-sessions = {} # User sessions
-mode = Mode.NONE # Default mode for the bot
-chat = KeyboardButton('Student Helper') # Buttons
-dalle = KeyboardButton('Artist')
-clear = KeyboardButton('Clear')
-keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(chat).add(dalle).add(clear) 
+sessions = {}
+mode = Mode.NONE
+
+chat = KeyboardButton(const.BUTTON_HELPER)
+dalle = KeyboardButton(const.BUTTON_ARTIST)
+clear = KeyboardButton(const.BUTTON_CLEAR)
+keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(chat).add(dalle).add(clear)
 
 """/start command functionality"""
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
-    user_id = message.from_user.id # get user ID
+    user_id = message.from_user.id
     user_full_name = message.from_user.full_name
     logging.info(f'{user_id=} {user_full_name=} {time.asctime()}')
-    # Send welcome message with keyboard markup
-    await message.reply(f"Hello {user_full_name}!\n"
-                        f"I am Student Helper Bot\n\n"
-                        f"I could be:\n"
-                        f"1. Student Assistant\n"
-                        f"2. Artist", reply_markup=keyboard1)
+    await message.reply(const.START_MESSAGE, reply_markup=keyboard1)
 
 """/helper command functionality"""
 @dp.message_handler(commands=['helper'])
@@ -44,14 +40,14 @@ async def set_helper_mode(message: types.Message):
     global mode
     sessions[message.chat.id] = []
     mode = Mode.STUDENT_HELPER
-    await message.reply("now i'm a student helper\nplease enter the list of courses you've taken:\n")
+    await message.reply(const.HELPER_MESSAGE)
 
 """/artist command functionality"""
 @dp.message_handler(commands=['artist'])
 async def set_dalle_mode(message: types.Message):
     global mode
     mode = Mode.DALLE
-    await message.reply("now i'm an artist")
+    await message.reply(const.ARTIST_MESSAGE)
 
 """/clear command functionality"""
 @dp.message_handler(commands=['clear'])
@@ -59,7 +55,7 @@ async def clear_data(message: types.Message):
     global mode
     mode = Mode.NONE
     sessions[message.chat.id].clear()
-    await message.reply("Chat context cleared")
+    await message.reply(const.CLEAR_MESSAGE)
     
 """Prompt handler"""
 @dp.message_handler()
