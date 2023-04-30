@@ -1,14 +1,16 @@
 import time
 import logging
+from dotenv import load_dotenv
 import os
 
 import const
 from ChatClient import ChatClient
 from aiogram import Bot, Dispatcher, executor, types
 
+load_dotenv()
 bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
 dp = Dispatcher(bot=bot)
-chatClient = ChatClient()
+chatClient = ChatClient(api_key=os.getenv(const.OPENAI_API_KEY))
 
 sessions = {}
 
