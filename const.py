@@ -1,3 +1,5 @@
+# Application constant strings.
+
 OPENAI_API_KEY = "OPENAI_API_KEY"
 TELEGRAM_API_KEY = "TELEGRAM_API_KEY"
 
