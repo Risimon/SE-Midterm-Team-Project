@@ -1,11 +1,12 @@
 import time
 import logging
+import os
+
+import const
 from ChatClient import ChatClient
 from aiogram import Bot, Dispatcher, executor, types
 
-TOKEN = "6175511910:AAFRAyMtLAcg0okYIv3jBxbWkq1ibkIwCKQ"
-
-bot = Bot(token=TOKEN)
+bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
 dp = Dispatcher(bot=bot)
 chatClient = ChatClient()
 
