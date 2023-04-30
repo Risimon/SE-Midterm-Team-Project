@@ -7,7 +7,9 @@ import os
 import const
 from ChatClient import ChatClient
 from DalleClient import DalleClient
+from WhisperClient import WhisperClient
 from aiogram import Bot, Dispatcher, executor, types
+from typing import Union
 from io import BytesIO
 import requests
 
@@ -17,6 +19,7 @@ bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
 dp = Dispatcher(bot=bot)
 chatClient = ChatClient(os.getenv(const.OPENAI_API_KEY))
 dalleClient = DalleClient(os.getenv(const.OPENAI_API_KEY))
+whisperClient = WhisperClient(os.getenv(const.OPENAI_API_KEY))
 
 sessions = {}
 mode = Mode.NONE
@@ -68,6 +71,9 @@ async def prompt(message: types.Message):
         ask_dalle_api(message)
         photo = dalleClient.respond(message.text)
         await bot.send_photo(chat_id=message.chat.id, photo=photo)
+    elif mode == Mode.WHISPER:
+        ask_whisper_api(message)
+        await message.reply(message) #?
     elif mode == Mode.NONE:
         await message.reply("First choose the mode")
 
@@ -89,3 +95,10 @@ def ask_dalle_api(message: types.Message):
         photo_data = BytesIO(photo_response.content)
         photo = types.InputFile(photo_data)
         return photo
+
+
+def ask_whisper_api(message: Union[types.Audio, types.Voice]):
+    text = whisperClient.respond(message)
+    
+    print(text)
+
