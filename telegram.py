@@ -64,14 +64,11 @@ async def prompt(message: types.Message):
         if response:
             await message.reply(response)
     elif mode == Mode.DALLE:
-        url = dalleClient.respond(message.text)
-        if url:
-            photo_response = requests.get(url)
-            photo_data = BytesIO(photo_response.content)
-            photo = types.InputFile(photo_data)
-            await bot.send_photo(chat_id=message.chat.id, photo=photo)
+        ask_dalle_api(message)
+        photo = dalleClient.respond(message.text)
+        await bot.send_photo(chat_id=message.chat.id, photo=photo)
     elif mode == Mode.NONE:
-            await message.reply("First choose the mode")
+        await message.reply("First choose the mode")
 
             
 def ask_chat_api(message: types.Message):
