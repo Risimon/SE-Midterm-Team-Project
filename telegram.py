@@ -50,10 +50,11 @@ async def set_dalle_mode(message: types.Message):
 
 
 @dp.message_handler(commands=['clear'])
-def clear_data(message: types.Message):
+async def clear_data(message: types.Message):
     global mode
     mode = Mode.NONE
     sessions[message.chat.id].clear()
+    await message.reply("Chat context cleared")
     
 
 @dp.message_handler()
