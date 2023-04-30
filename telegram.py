@@ -52,6 +52,14 @@ async def set_dalle_mode(message: types.Message):
     await message.reply("now i'm an artist")
 
 
+@dp.message_handler(commands=['clear'])
+async def clear_data(message: types.Message):
+    global mode
+    mode = Mode.NONE
+    sessions[message.chat.id].clear()
+    await message.reply("Chat context cleared")
+    
+
 @dp.message_handler()
 async def prompt(message: types.Message):
     global mode
@@ -59,13 +67,12 @@ async def prompt(message: types.Message):
         response = ask_chat_api(message)
         if response:
             await message.reply(response)
-    else:
-        url = dalleClient.respond(message.text)
-        if url:
-            photo_response = requests.get(url)
-            photo_data = BytesIO(photo_response.content)
-            photo = types.InputFile(photo_data)
-            await bot.send_photo(chat_id=message.chat.id, photo=photo)
+    elif mode == Mode.DALLE:
+        ask_dalle_api(message)
+        photo = dalleClient.respond(message.text)
+        await bot.send_photo(chat_id=message.chat.id, photo=photo)
+    elif mode == Mode.NONE:
+        await message.reply("First choose the mode")
 
             
 def ask_chat_api(message: types.Message):
