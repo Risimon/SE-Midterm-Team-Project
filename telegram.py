@@ -1,5 +1,6 @@
 import time
 import logging
+from dotenv import load_dotenv
 import os
 
 import const
@@ -7,10 +8,10 @@ from ChatClient import ChatClient
 from DalleClient import DalleClient
 from aiogram import Bot, Dispatcher, executor, types
 
+load_dotenv()
 bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
 dp = Dispatcher(bot=bot)
 chatClient = ChatClient()
-dalleClient = DalleClient()
 
 sessions = {}
 

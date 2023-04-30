@@ -1,16 +1,13 @@
-import os
 import openai
-
-import const
 from const import CHAT_PROMPT
 
 from BaseClient import BaseClient
 
 
 class ChatClient(BaseClient):
-    def __init__(self):
+    def __init__(self, api_key):
         self.model = "gpt-3.5-turbo"
-        openai.api_key = const.OPENAI_API_KEY
+        openai.api_key = api_key
 
     def respond(self, message_list):
         prompt = CHAT_PROMPT % message_list[0]["content"]
