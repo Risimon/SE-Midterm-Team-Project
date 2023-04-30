@@ -7,9 +7,12 @@ import os
 import const
 from ChatClient import ChatClient
 from DalleClient import DalleClient
+from WhisperClient import WhisperClient
+from typing import Union
 from aiogram import Bot, Dispatcher, executor, types
 from io import BytesIO
 import requests
+import base64
 
 
 load_dotenv()
@@ -82,3 +85,4 @@ def ask_dalle_api(message: types.Message):
         photo_data = BytesIO(photo_response.content)
         photo = types.InputFile(photo_data)
         return photo
+
