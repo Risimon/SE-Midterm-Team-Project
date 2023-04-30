@@ -64,6 +64,7 @@ async def prompt(message: types.Message):
             photo = types.InputFile(photo_data)
             await bot.send_photo(chat_id=message.chat.id, photo=photo)
 
+            
 def ask_chat_api(message: types.Message):
     if not sessions[message.chat.id]:
         sessions[message.chat.id].append({"role": "user", "content": message.text})
@@ -72,3 +73,12 @@ def ask_chat_api(message: types.Message):
         response = chatClient.respond(sessions[message.chat.id])
         sessions[message.chat.id].append(response[-1])
         return response[-1]["content"]
+
+
+def ask_dalle_api(message: types.Message):
+    url = dalleClient.respond(message.text)
+    if url:
+        photo_response = requests.get(url)
+        photo_data = BytesIO(photo_response.content)
+        photo = types.InputFile(photo_data)
+        return photo
