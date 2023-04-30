@@ -23,7 +23,7 @@ whisperClient = WhisperClient(os.getenv(const.OPENAI_API_KEY))
 
 sessions = {}
 mode = Mode.NONE
-
+git
 
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
