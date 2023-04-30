@@ -23,7 +23,8 @@ mode = Mode.NONE
 
 chat = KeyboardButton('Student Helper')
 dalle = KeyboardButton('Artist')
-keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(chat).add(dalle)
+clear = KeyboardButton('Clear')
+keyboard1 = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(chat).add(dalle).add(clear)
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
     user_id = message.from_user.id
@@ -65,6 +66,8 @@ async def prompt(message: types.Message):
         await set_helper_mode(message)
     elif message.text == "Artist":
         await set_dalle_mode(message)
+    elif message.text == "Clear":
+        await clear_data(message)
     else:
         if mode == Mode.STUDENT_HELPER:
             response = ask_chat_api(message)
