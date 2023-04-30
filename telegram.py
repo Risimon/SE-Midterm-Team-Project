@@ -4,11 +4,13 @@ import os
 
 import const
 from ChatClient import ChatClient
+from DalleClient import DalleClient
 from aiogram import Bot, Dispatcher, executor, types
 
 bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))
 dp = Dispatcher(bot=bot)
 chatClient = ChatClient()
+dalleClient = DalleClient()
 
 sessions = {}
 
@@ -27,6 +29,11 @@ async def start_handler(message: types.Message):
 async def set_mode(message: types.Message):
     sessions[message.chat.id] = []
     await message.reply("now i'm a student helper\nplease enter the list of courses you've taken:\n")
+
+@dp.message_handler(commands=['2'])
+async def set_mode(message: types.Message):
+    sessions[message.chat.id] = []
+    await message.reply("now i'm an artist\nplease enter your description:\n")
 
 @dp.message_handler()
 async def prompt(message: types.Message):
