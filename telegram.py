@@ -35,4 +35,4 @@ async def prompt(message: types.Message):
         sessions[message.chat.id].append({"role": "user", "content": message.text})
         response = chatClient.respond(sessions[message.chat.id])
         sessions[message.chat.id].append(response[-1])
-        await message.reply(response[-1]["content"])
+        await message.reply(response[-1]["content"])    
