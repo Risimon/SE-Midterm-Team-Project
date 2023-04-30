@@ -7,15 +7,10 @@ import os
 import const
 from ChatClient import ChatClient
 from DalleClient import DalleClient
-from WhisperClient import WhisperClient
-from typing import Union
-from WhisperClient import WhisperClient
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
-from typing import Union
 from io import BytesIO
 import requests
-import base64
 
 load_dotenv()
 bot = Bot(token=os.getenv(const.TELEGRAM_API_KEY))

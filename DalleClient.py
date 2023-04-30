@@ -1,7 +1,5 @@
 import openai
 
-import const
-
 from BaseClient import BaseClient
 
 class DalleClient(BaseClient):
@@ -13,7 +11,7 @@ class DalleClient(BaseClient):
     # generate the image and return the URL
     def respond(self, messages):
         response = openai.Image.create(
-            prompt = messages,
+            prompt = messages, 
             n = 1,
             size = "256x256"
         )
