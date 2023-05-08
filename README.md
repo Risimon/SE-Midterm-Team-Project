@@ -6,5 +6,5 @@ Presentation:
 Report:
 [Team Temirlan - SE Midterm Project.pdf](https://github.com/Risimon/SE-Midterm-Team-Project/files/11361533/Team.Temirlan.-.SE.Midterm.Project.pdf)
 
-How to create a telegram bot
+How to create Telegram Bot:
 https://core.telegram.org/bots/tutorial
